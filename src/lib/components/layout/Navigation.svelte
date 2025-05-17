@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import type { navProps } from '$lib/navigation';
+	import type { navProps } from '$lib/navigation-helpers';
 	import Logo from '../Logo.svelte';
 	import { theme } from '$lib/theme.svelte';
 

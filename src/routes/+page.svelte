@@ -1,8 +1,12 @@
-<script>
-	import { onMount } from 'svelte';
+<script lang="ts">
+	import { routes } from '$lib/navigation-controller';
+	import type { MetaTags } from '$lib/navigation-helpers';
+	import SeoHead from '$lib/components/seo/SeoHead.svelte';
 
-	onMount(() => {});
+	const metatags = routes.public.find((route) => route.name === 'Home')?.metatags as MetaTags;
 </script>
+
+<SeoHead {metatags} />
 
 <h1>Rivas Web designs 2025 buildkit!</h1>
 <p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>

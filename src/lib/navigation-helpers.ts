@@ -1,57 +1,37 @@
+// helpers and types for navigation controller
+import { routes } from "$lib/navigation-controller";
+
 export type RouteGroup = 'auth' | 'public' | 'protected';
 
-export interface RouteInfo {
+export interface MetaTags {
+    title: string;
+    description: string;
+    keywords: string;
+    canonical: string;
+    siteName: string;
+    index: boolean;
+    twitter: boolean;
+    openGraph: boolean;
+    schemaOrg: boolean;
+    imageURL: string;
+    logo: string;
+    author: string;
+    name: string;
+}
+
+export type RouteInfo = {
     path: string;
     name: string;
     iconPath: string;
     showInNav?: boolean;
     children?: RouteInfo[];
+    metatags?: MetaTags;
 }
 
 export interface navProps {
     navType: 'protected' | 'public';
     routes: RouteInfo[];
 }
-
-// RouteGroup key and an array of RouteInfos
-export const routes: Record<RouteGroup, RouteInfo[]> = {
-    // Auth routes. also public but different layout
-    auth: [
-        { path: '/login', name: 'Sign In', iconPath: '', showInNav: true },
-    ],
-
-    // Public routes
-    public: [
-        { path: '/', name: 'Home', iconPath: '', showInNav: true },
-        {
-            path: '/services', name: 'Services', iconPath: '', showInNav: true,
-            children: [
-                { path: '/web-design', name: 'Web Design', iconPath: '', showInNav: true },
-                { path: '/web-dev', name: 'Web Development', iconPath: '', showInNav: true },
-            ]
-        },
-        { path: '/about', name: 'About', iconPath: '', showInNav: true },
-        { path: '/portfolio', name: 'Portfolio', iconPath: '', showInNav: true },
-        { path: '/contact', name: 'Contact', iconPath: '', showInNav: true },
-    ],
-
-    // Protected routes
-    protected: [
-        {
-            path: '/app', name: 'App', iconPath: '', showInNav: true,
-            children: [
-                { path: '/app', name: 'App Home', iconPath: '', showInNav: true },
-            ]
-        },
-        {
-            path: '/settings', name: 'Settings', iconPath: '', showInNav: true,
-            children: [
-                { path: '/settings', name: 'Settings Home', iconPath: '', showInNav: true },
-            ]
-        },
-    ]
-};
-
 
 // helper functions
 function flattenRoutes(routeList: RouteInfo[]): RouteInfo[] {
