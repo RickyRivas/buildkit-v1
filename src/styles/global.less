@@ -1,0 +1,155 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.fontG() {
+    font-family: "Geist", sans-serif;
+}
+
+:root {
+    // colors
+    --primary: #8A1A23;
+    --primary-light: #8a1a230d;
+    --secondary: #033B52;
+
+    // background colors
+    --bg: #fff;
+
+    // text
+    --heading: #1A1A1A;
+    --text: #212121;
+    --link: #3A5133;
+}
+
+// dark theme
+:root.dark {
+    // colors
+    // --primary: #ba5b38;
+    // --secondary: #693521;
+    --bg: #0e1011;
+}
+
+body,
+input,
+select,
+textarea {
+    .fontG;
+}
+
+html {
+    overflow-y: scroll;
+}
+
+body {
+    .fontG;
+    overflow: hidden;
+    position: relative;
+    font-size: 16px;
+    min-height: 100vh;
+    background-color: var(--bg);
+    color: var(--text);
+
+    @media (min-width: 1300px) {
+        font-size: 20px;
+    }
+}
+
+@h2fs: 26;
+@h3fs: 22;
+@h4fs: 21;
+@h5fs: 20;
+@h6fs: 19;
+
+h1,
+h2:not(.title),
+h3:not(.title),
+h4,
+h5,
+h6 {
+    line-height: 1;
+    color: var(--heading);
+    text-rendering: auto;
+    text-transform: capitalize;
+    margin: 0 0 1em;
+}
+
+h1 {
+    font-size: unit((30/20), em);
+}
+
+h2:not(.title) {
+    font-size: unit((@h2fs/20), em);
+}
+
+h3:not(.title) {
+    font-size: unit((@h3fs/20), em);
+}
+
+h4 {
+    font-size: unit((@h4fs/20), em);
+}
+
+h5 {
+    font-size: unit((@h5fs/20), em);
+}
+
+h6 {
+    font-size: unit((@h6fs/20), em);
+}
+
+p {
+    margin: 0 0 1.58em;
+    line-height: 1.5;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.screenreader {
+    white-space: nowrap;
+    height: 1px;
+    width: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    position: absolute;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+}
+
+.container {
+    display: block;
+    width: 90%;
+    max-width: unit((1400/20), em);
+    margin: 0 auto;
+}
+
+svg {
+    width: 100%;
+    height: auto;
+}
+
+.btn {
+    @lh: 42; //line-height
+    @fs: 14; //font-size
+
+    .lh((@lh/@fs));
+    .fs(~'clamp( 14px,'(@fs/20em) ~','(@fs*1px) ~')');
+    .ib;
+    .va(top);
+    color: var(--text);
+    border: 1px solid var(--primary-light);
+    padding: 0 unit((10/@fs), em);
+    text-decoration: none;
+}
