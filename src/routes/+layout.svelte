@@ -30,4 +30,4 @@
 <main>
 	{@render children()}
 </main>
-<Footer />
+<Footer {routes} />

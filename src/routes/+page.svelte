@@ -2,7 +2,6 @@
 	import { routes } from '$lib/navigation-controller';
 	import type { MetaTags } from '$lib/navigation-helpers';
 	import SeoHead from '$lib/components/seo/SeoHead.svelte';
-
 	const metatags = routes.public.find((route) => route.name === 'Home')?.metatags as MetaTags;
 </script>
 

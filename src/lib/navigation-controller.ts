@@ -34,16 +34,31 @@ export const routes: Record<RouteGroup, RouteInfo[]> = {
             showInNav: true,
             children: [
                 {
-                    path: '/web-design',
+                    path: '/',
                     name: 'Web Design',
                     iconPath: '',
                     showInNav: true,
                     children: [
                         {
-                            path: '/',
+                            path: '/web-design',
                             name: 'Web Design tert 1',
                             iconPath: '',
-                            showInNav: true
+                            showInNav: true,
+                            metatags: {
+                                title: 'Web Development Services | Custom Solutions for Modern Businesses',
+                                description: 'Professional web development services offering custom solutions, responsive design, and cutting-edge technologies to help your business thrive online.',
+                                keywords: 'web development, frontend development, backend development, responsive design, JavaScript, TypeScript, React, Node.js, custom web solutions',
+                                canonical: 'https://mystarter.example.com/web-development',
+                                siteName: 'My Starter Template',
+                                index: true,
+                                twitter: true,
+                                openGraph: true,
+                                schemaOrg: true,
+                                imageURL: 'https://mystarter.example.com/assets/images/web-dev-banner.jpg',
+                                logo: 'https://mystarter.example.com/assets/images/logo.svg',
+                                author: 'Your Name or Company',
+                                name: 'Web Development'
+                            }
                         },
                         {
                             path: '/',
