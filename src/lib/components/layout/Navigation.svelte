@@ -18,16 +18,27 @@
 		document.documentElement.classList.add(theme.current);
 	});
 
-	let mainHeader, mainNav, trigger, mainNavItems: NodeListOf<HTMLLIElement>;
+	let mainHeader,
+		mainNav,
+		trigger,
+		mainNavItems: NodeListOf<HTMLLIElement>,
+		mainNavSubItems: NodeListOf<HTMLLIElement>;
 
 	onMount(() => {
-		mainNavItems = document.querySelectorAll('.main-header__nav > ul > li');
+		mainNavItems = document.querySelectorAll('.main-header__nav-item');
+		mainNavSubItems = document.querySelectorAll('.main-header__nav-sub-item');
 	});
 
 	function toggleNav() {
 		isActive = !isActive;
-		if (mainNavItems.length)
+		if (mainNavItems.length) {
 			mainNavItems.forEach((item) => item.classList.remove('main-header__nav-item--clicked'));
+		}
+		if (mainNavSubItems.length) {
+			mainNavSubItems.forEach((item) =>
+				item.classList.remove('main-header__nav-sub-item--clicked')
+			);
+		}
 	}
 </script>
 
@@ -89,7 +100,7 @@
 			<nav class="main-header__nav" class:main-header__nav--active={isActive} bind:this={mainNav}>
 				<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 				<!-- svelte-ignore a11y_click_events_have_key_events -->
-				<ul class="main-header__nav-links">
+				<ul class="main-header__nav-items" style="--level: 1;">
 					<!-- top level routes -->
 					{#each routes as route}
 						{#if route.path === '/'}
@@ -116,8 +127,8 @@
 								<!-- 2nd level routes -->
 								{#if route.children?.length}
 									<button
-										class="main-header__nav-link"
-										id="main-header__nav-link-{route.name.toLowerCase()}"
+										class="main-header__nav-button"
+										id="main-header__nav-button-{route.name.toLowerCase()}"
 										tabindex="0"
 										onclick={(e: MouseEvent) => {
 											const target = e.target as HTMLElement;
@@ -138,6 +149,13 @@
 													if (item === parent) return;
 													item.classList.remove('main-header__nav-item--clicked');
 												});
+
+												// toggle sub items too
+												mainNavSubItems.forEach((item: HTMLElement) => {
+													if (item === parent) return;
+													item.classList.remove('main-header__nav-sub-item--clicked');
+												});
+
 												parent.classList.toggle('main-header__nav-item--clicked');
 											}
 										}}
@@ -151,7 +169,7 @@
 											viewBox="0 0 15 10"
 											aria-hidden="true"
 											role="img"
-											class="arrow"
+											class="main-header__nav-arrow"
 										>
 											<path
 												fill="currentcolor"
@@ -159,12 +177,81 @@
 											/>
 										</svg>
 									</button>
-									<ul class="main-header__nav-sub-links">
+
+									<ul class="main-header__nav-sub-items" style="--level: 2;">
 										{#each route.children as subroute}
-											<li class="main-header__nav-sub-item" onclick={toggleNav}>
-												<a href={subroute.path} class="main-header__nav-sub-link">
-													<span>{subroute.name}</span>
-												</a>
+											<li
+												class="main-header__nav-sub-item"
+												class:main-header__nav-sub-item--haschildren={subroute.children?.length}
+											>
+												<!-- tertiary links -->
+												{#if subroute.children?.length}
+													<button
+														class="main-header__nav-sub-button"
+														tabindex="0"
+														onclick={(e: MouseEvent) => {
+															const target = e.target as HTMLElement;
+
+															if (width > 1023) {
+																// focus on first list item
+																const siblingList = target.nextElementSibling as HTMLElement;
+																if (siblingList) {
+																	const siblingListFirstItem = siblingList
+																		.children[0] as HTMLLIElement;
+																	const siblingListFirstItemAnchor =
+																		siblingListFirstItem?.firstChild as HTMLAnchorElement;
+																	siblingListFirstItemAnchor.focus();
+																}
+															} else {
+																// toggle classes
+																const parent = target.parentElement as HTMLElement;
+																const mainNavSubItems = document.querySelectorAll(
+																	'.main-header__nav-sub-item'
+																) as NodeListOf<HTMLLIElement>;
+
+																mainNavSubItems.forEach((item: HTMLElement) => {
+																	if (item === parent) return;
+																	item.classList.remove('main-header__nav-sub-item--clicked');
+																});
+																parent.classList.toggle('main-header__nav-sub-item--clicked');
+															}
+														}}
+													>
+														<span>{subroute.name}</span>
+														<svg
+															xmlns="http://www.w3.org/2000/svg"
+															width="15"
+															height="10"
+															fill="none"
+															viewBox="0 0 15 10"
+															aria-hidden="true"
+															role="img"
+															class="main-header__nav-arrow"
+														>
+															<path
+																fill="currentcolor"
+																d="M12.94.223 7.5 5.663 2.06.222 0 2.283l7.5 7.5 7.5-7.5-2.06-2.06Z"
+															/>
+														</svg>
+													</button>
+													<ul class="main-header__nav-tertiary-items" style="--level: 3;">
+														{#each subroute.children as tertiaryRoute}
+															<li class="main-header__nav-tertiary-item">
+																<a href={tertiaryRoute.path} class="main-header__nav-tertiary-link">
+																	<span>{tertiaryRoute.name}</span>
+																</a>
+															</li>
+														{/each}
+													</ul>
+												{:else}
+													<a
+														href={subroute.path}
+														class="main-header__nav-sub-link"
+														onclick={toggleNav}
+													>
+														<span>{subroute.name}</span>
+													</a>
+												{/if}
 											</li>
 										{/each}
 									</ul>

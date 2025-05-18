@@ -37,13 +37,41 @@ export const routes: Record<RouteGroup, RouteInfo[]> = {
                     path: '/web-design',
                     name: 'Web Design',
                     iconPath: '',
-                    showInNav: true
+                    showInNav: true,
+                    children: [
+                        {
+                            path: '/',
+                            name: 'Web Design tert 1',
+                            iconPath: '',
+                            showInNav: true
+                        },
+                        {
+                            path: '/',
+                            name: 'Web Design tert 2',
+                            iconPath: '',
+                            showInNav: true
+                        },
+                    ]
                 },
                 {
                     path: '/web-dev',
                     name: 'Web Development',
                     iconPath: '',
-                    showInNav: true
+                    showInNav: true,
+                    children: [
+                        {
+                            path: '/',
+                            name: 'Web dev tert 1',
+                            iconPath: '',
+                            showInNav: true
+                        },
+                        {
+                            path: '/',
+                            name: 'Web dev tert 1',
+                            iconPath: '',
+                            showInNav: true
+                        },
+                    ]
                 },
             ],
         },
