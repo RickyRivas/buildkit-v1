@@ -45,6 +45,8 @@
 <svelte:window bind:innerWidth={width} />
 
 <header id="main-header" class="main-header" tabindex="-1" bind:this={mainHeader}>
+	<a class="skiplink" href="#content"> Skip to Main Content </a>
+
 	<div class="main-header__container">
 		<a id="logo" class="main-header__logo" href="/">
 			<Logo />
