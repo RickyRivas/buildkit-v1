@@ -40,11 +40,19 @@
 			);
 		}
 	}
+
+	let y = $state(0);
 </script>
 
-<svelte:window bind:innerWidth={width} />
+<svelte:window bind:innerWidth={width} bind:scrollY={y} />
 
-<header id="main-header" class="main-header" tabindex="-1" bind:this={mainHeader}>
+<header
+	id="main-header"
+	class:ready={currentPagePath === '/' && y < 100}
+	class="main-header"
+	tabindex="-1"
+	bind:this={mainHeader}
+>
 	<a class="skiplink" href="#content"> Skip to Main Content </a>
 
 	<div class="main-header__container">
