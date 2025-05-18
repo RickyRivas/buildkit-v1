@@ -30,11 +30,17 @@
 					<ul class="ft__col-list">
 						{#each routes as route}
 							{#if route.path === '/'}
-								<li class="ft__col-list-item">
+								<li
+									class="ft__col-list-item"
+									class:ft__col-list-item--active={currentPagePath === '/'}
+								>
 									<a class="ft__col-list-item-link" href={route.path}>{route.name}</a>
 								</li>
 							{:else}
-								<li class="ft__col-list-item">
+								<li
+									class="ft__col-list-item"
+									class:ft__col-list-item--active={currentPagePath.startsWith(route.path)}
+								>
 									<a class="ft__col-list-item-link" href={route.path}>{route.name}</a>
 								</li>
 							{/if}
