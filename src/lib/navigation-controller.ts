@@ -57,7 +57,21 @@ export const routes: Record<RouteGroup, RouteInfo[]> = {
             path: '/portfolio',
             name: 'Portfolio',
             iconPath: '',
-            showInNav: true
+            showInNav: true,
+            children: [
+                {
+                    path: '/portfolio-1',
+                    name: 'Case 1',
+                    iconPath: '',
+                    showInNav: true
+                },
+                {
+                    path: '/portfolio-2',
+                    name: 'Case 2',
+                    iconPath: '',
+                    showInNav: true
+                },
+            ],
         },
         {
             path: '/contact',
