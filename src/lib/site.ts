@@ -1,6 +1,6 @@
-import type { RouteGroup, RouteInfo } from "$lib/navigation-helpers";
+import type { RouteGroup, RouteInfo } from "./helpers/navigation";
 
-// routes for entire app.
+// controller for entire app
 export const routes: Record<RouteGroup, RouteInfo[]> = {
     auth: [],
 

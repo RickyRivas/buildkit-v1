@@ -2,13 +2,14 @@
 	import { page } from '$app/state';
 	import Logo from '../Logo.svelte';
 	let currentPagePath = $derived(page.url.pathname);
-	import type { navProps } from '$lib/navigation-helpers';
-	import { data } from '$lib/data';
-	import { formatPhoneLink } from '$lib/formatters';
+	import { data } from '$lib/account';
 	import PhoneIcon from '../icons/PhoneIcon.svelte';
 	import EmailIcon from '../icons/EmailIcon.svelte';
 	import MarkerIcon from '../icons/MarkerIcon.svelte';
+	import type { navProps } from '$lib/helpers/navigation';
+	import { formatPhoneLink } from '$lib/helpers/format';
 	let { routes }: navProps = $props();
+	formatPhoneLink;
 </script>
 
 <footer id="ft" class="ft">

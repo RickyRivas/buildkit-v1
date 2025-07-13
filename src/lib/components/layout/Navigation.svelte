@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import type { navProps } from '$lib/navigation-helpers';
 	import Logo from '../Logo.svelte';
-	import { theme } from '$lib/theme.svelte';
 	import { onMount } from 'svelte';
+	import type { navProps } from '$lib/helpers/navigation';
+	import { theme } from '$lib/theme/index.svelte';
 
 	let isActive = $state(false);
 	let currentPagePath = $derived(page.url.pathname);

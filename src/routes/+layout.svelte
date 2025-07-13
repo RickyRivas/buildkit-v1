@@ -3,7 +3,7 @@
 	import type { LayoutProps } from './$types';
 	import Navigation from '$lib/components/layout/Navigation.svelte';
 	import Footer from '$lib/components/layout/Footer.svelte';
-	import { getNavRoutes } from '$lib/navigation-helpers';
+	import { getNavRoutes } from '$lib/helpers/navigation';
 
 	const { children }: LayoutProps = $props();
 	const routes = getNavRoutes('public');
