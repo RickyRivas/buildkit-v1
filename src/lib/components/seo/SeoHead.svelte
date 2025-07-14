@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import type { MetaTags } from '$lib/navigation/helpers';
+	import type { MetaTags } from '$lib/helpers/navigation';
 	let { metatags }: { metatags: MetaTags } = $props();
 
 	// export let title = '';

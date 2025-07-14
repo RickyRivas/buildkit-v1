@@ -1,5 +1,5 @@
 // helpers and types for navigation controller
-import { routes } from "$lib/navigation-controller";
+import { routes } from "$lib/site";
 
 export type RouteGroup = 'auth' | 'public' | 'protected';
 
@@ -47,12 +47,12 @@ function flattenRoutes(routeList: RouteInfo[]): RouteInfo[] {
 /**
  * Find route information for a specific path, searching through all nested routes
  */
-export function findRouteInfo(path: string): { group: RouteGroup; route: RouteInfo; parent?: RouteInfo } | undefined {
+export function findRouteInfo(path: string): { group: RouteGroup; route: RouteInfo; parent?: RouteInfo, metatags?: MetaTags } | undefined {
     for (const [group, routeList] of Object.entries(routes) as [RouteGroup, RouteInfo[]][]) {
         // Check direct routes first
         const exactRoute = routeList.find(r => r.path === path);
         if (exactRoute) {
-            return { group: group as RouteGroup, route: exactRoute };
+            return { group: group as RouteGroup, route: exactRoute, metatags: exactRoute.metatags };
         }
 
         // Check for sub-routes in children
@@ -63,7 +63,8 @@ export function findRouteInfo(path: string): { group: RouteGroup; route: RouteIn
                     return {
                         group: group as RouteGroup,
                         route: childRoute,
-                        parent: parentRoute
+                        parent: parentRoute,
+                        metatags: childRoute.metatags
                     };
                 }
             }

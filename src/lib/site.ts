@@ -34,18 +34,18 @@ export const routes: Record<RouteGroup, RouteInfo[]> = {
             showInNav: true,
             children: [
                 {
-                    path: '/',
-                    name: 'Web Design',
+                    path: '',
+                    name: 'Web Design Group',
                     iconPath: '',
                     showInNav: true,
                     children: [
                         {
                             path: '/web-design',
-                            name: 'Web Design tert 1',
+                            name: 'Web Design',
                             iconPath: '',
                             showInNav: true,
                             metatags: {
-                                title: 'Web Development Services | Custom Solutions for Modern Businesses',
+                                title: 'Web Design',
                                 description: 'Professional web development services offering custom solutions, responsive design, and cutting-edge technologies to help your business thrive online.',
                                 keywords: 'web development, frontend development, backend development, responsive design, JavaScript, TypeScript, React, Node.js, custom web solutions',
                                 canonical: 'https://mystarter.example.com/web-development',
@@ -60,29 +60,23 @@ export const routes: Record<RouteGroup, RouteInfo[]> = {
                                 name: 'Web Development'
                             }
                         },
-                        {
-                            path: '/',
-                            name: 'Web Design tert 2',
-                            iconPath: '',
-                            showInNav: true
-                        },
                     ]
                 },
                 {
-                    path: '/web-dev',
+                    path: '',
                     name: 'Web Development',
                     iconPath: '',
                     showInNav: true,
                     children: [
                         {
-                            path: '/',
-                            name: 'Web dev tert 1',
+                            path: '/software',
+                            name: 'Software',
                             iconPath: '',
                             showInNav: true
                         },
                         {
-                            path: '/',
-                            name: 'Web dev tert 1',
+                            path: '/ai',
+                            name: 'AI',
                             iconPath: '',
                             showInNav: true
                         },
@@ -120,7 +114,22 @@ export const routes: Record<RouteGroup, RouteInfo[]> = {
             path: '/contact',
             name: 'Contact',
             iconPath: '',
-            showInNav: true
+            showInNav: true,
+            metatags: {
+                title: 'Contact Page',
+                description: 'A powerful, responsive starter template for building modern web applications with the latest technologies and best practices.',
+                keywords: 'web development, starter template, frontend, react, typescript, responsive design',
+                canonical: 'https://mystarter.example.com/contact',
+                siteName: '',
+                index: true,
+                twitter: true,
+                openGraph: true,
+                schemaOrg: true,
+                imageURL: 'https://mystarter.example.com/assets/images/home-banner.jpg',
+                logo: 'https://mystarter.example.com/assets/images/logo.svg',
+                author: 'Your Name or Company',
+                name: 'Home Page'
+            }
         },
     ],
 

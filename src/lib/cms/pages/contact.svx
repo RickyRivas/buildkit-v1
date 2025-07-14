@@ -1,0 +1,16 @@
+---
+title: Contact Page
+layout: standard
+---
+
+<script>
+	import ContactForm from "$lib/components/form/ContactForm.svelte"
+</script>
+
+# { title }
+
+## Good stuff in your markdown
+
+Markdown is pretty good but sometimes you just need more.
+
+<ContactForm/>
