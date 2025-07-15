@@ -1,0 +1,26 @@
+{
+  "main_nav": [
+    {
+      "name": "Home",
+      "path": "/",
+      "iconPath": "",
+      "showInNav": true,
+      "children": []
+    },
+    {
+      "name": "Services",
+      "path": "/services",
+      "iconPath": "",
+      "showInNav": true,
+      "children": [
+        {
+          "name": "Web Design",
+          "path": "/web-design",
+          "iconPath": "",
+          "showInNav": true,
+          "children": []
+        }
+      ]
+    }
+  ]
+}
