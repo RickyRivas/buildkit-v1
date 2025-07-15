@@ -21,6 +21,13 @@
           "children": []
         }
       ]
+    },
+    {
+      "name": "Contact",
+      "path": "/contact",
+      "iconPath": "",
+      "showInNav": true,
+      "children": []
     }
   ]
 }
