@@ -1,7 +1,7 @@
 ---
 title: Rivas Web Designs
 slug: rivas-web-designs
-layout: standard
+layout: full-width
 meta_title: Rivas Web Designs Page
 meta_description: this page is for the Rivas Web Designs page
 featured_image: /images/og.jpg
