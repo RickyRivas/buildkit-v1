@@ -1,5 +1,4 @@
 # Sveltia CMS Configuration
-
 backend:
   name: github
   branch: main
@@ -134,7 +133,7 @@ collections:
     files:
       - label: "General Settings"
         name: "general"
-        file: "src/content/settings/general.json"
+        file: "src/lib/settings/general.json"
         fields:
           - { label: "Site Title", name: "site_title", widget: "string" }
           - {
@@ -181,31 +180,62 @@ collections:
             name: "main_nav"
             widget: "list"
             fields:
-              - { label: "Label", name: "label", widget: "string" }
-              - { label: "URL", name: "url", widget: "string" }
+              - { label: "Name", name: "name", widget: "string" }
+              - { label: "Path", name: "path", widget: "string" }
               - {
-                  label: "Open in New Tab",
-                  name: "external",
-                  widget: "boolean",
-                  default: false,
+                  label: "Icon Path",
+                  name: "iconPath",
+                  widget: "string",
+                  required: false,
                 }
-          - label: "Footer Links"
-            name: "footer_nav"
-            widget: "list"
-            required: false
-            fields:
-              - { label: "Label", name: "label", widget: "string" }
-              - { label: "URL", name: "url", widget: "string" }
               - {
-                  label: "Open in New Tab",
-                  name: "external",
+                  label: "Show in Nav",
+                  name: "showInNav",
                   widget: "boolean",
-                  default: false,
+                  default: true,
                 }
+              - label: "Children"
+                name: "children"
+                widget: "list"
+                required: false
+                fields:
+                  - { label: "Name", name: "name", widget: "string" }
+                  - { label: "Path", name: "path", widget: "string" }
+                  - {
+                      label: "Icon Path",
+                      name: "iconPath",
+                      widget: "string",
+                      required: false,
+                    }
+                  - {
+                      label: "Show in Nav",
+                      name: "showInNav",
+                      widget: "boolean",
+                      default: true,
+                    }
+                  - label: "Sub-Children"
+                    name: "children"
+                    widget: "list"
+                    required: false
+                    fields:
+                      - { label: "Name", name: "name", widget: "string" }
+                      - { label: "Path", name: "path", widget: "string" }
+                      - {
+                          label: "Icon Path",
+                          name: "iconPath",
+                          widget: "string",
+                          required: false,
+                        }
+                      - {
+                          label: "Show in Nav",
+                          name: "showInNav",
+                          widget: "boolean",
+                          default: true,
+                        }
 
       - label: "SEO Settings"
         name: "seo"
-        file: "src/content/settings/seo.json"
+        file: "src/lib/settings/seo.json"
         fields:
           - {
               label: "Default Meta Title",
@@ -239,7 +269,7 @@ collections:
   # Custom sections for reusable components
   - name: "sections"
     label: "Page Sections"
-    folder: "src/content/sections"
+    folder: "src/lib/sections"
     create: true
     slug: "{{slug}}"
     fields:
