@@ -1,0 +1,10 @@
+{
+  "main_nav": [
+    {
+      "label": "Home",
+      "url": "/",
+      "external": false
+    }
+  ],
+  "footer_nav": []
+}
