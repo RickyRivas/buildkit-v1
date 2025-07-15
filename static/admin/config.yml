@@ -322,9 +322,8 @@ collections:
               },
             ],
         }
-
 # Optional: customize the CMS interface
-display_url: https://yoursite.netlify.app
-logo_url: /images/admin-logo.png
+# display_url: https://yoursite.netlify.app
+# logo_url: /images/admin-logo.png
 # Optional: enable editorial workflow for content approval
 # publish_mode: editorial_workflow
