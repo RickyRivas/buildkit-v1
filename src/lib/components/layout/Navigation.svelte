@@ -13,6 +13,10 @@
 
 	let width = $state(0);
 
+	// using cms controlled json to structure nav
+	import navigation from '$lib/settings/navigation.json';
+	const { main_nav } = navigation;
+
 	$effect(() => {
 		document.documentElement.classList.remove('light', 'dark');
 		document.documentElement.classList.add(theme.current);
@@ -112,7 +116,7 @@
 				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				<ul class="main-header__nav-items" style="--level: 1;">
 					<!-- top level routes -->
-					{#each routes as route}
+					{#each main_nav as route}
 						{#if route.path === '/'}
 							<li
 								class="main-header__nav-item"
