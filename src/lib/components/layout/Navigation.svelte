@@ -247,10 +247,7 @@
 													<ul class="main-header__nav-tertiary-items" style="--level: 3;">
 														{#each subroute.children as tertiaryRoute}
 															<li class="main-header__nav-tertiary-item">
-																<a
-																	href={route.path + subroute.path + tertiaryRoute.path}
-																	class="main-header__nav-tertiary-link"
-																>
+																<a href={tertiaryRoute.path} class="main-header__nav-tertiary-link">
 																	<span>{tertiaryRoute.name}</span>
 																</a>
 															</li>
@@ -258,7 +255,7 @@
 													</ul>
 												{:else}
 													<a
-														href={route.path + subroute.path}
+														href={subroute.path}
 														class="main-header__nav-sub-link"
 														onclick={toggleNav}
 													>

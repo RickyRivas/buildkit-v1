@@ -40,7 +40,7 @@ export const routes: Record<RouteGroup, RouteInfo[]> = {
                     showInNav: true,
                     children: [
                         {
-                            path: '/web-design',
+                            path: '/services/web-design',
                             name: 'Web Design',
                             iconPath: '',
                             showInNav: true,
