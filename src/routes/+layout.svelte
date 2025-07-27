@@ -26,8 +26,8 @@
 	</script>
 </svelte:head>
 
-<Navigation navType="public" {routes} />
+<Navigation />
 <main>
 	{@render children()}
 </main>
-<Footer {routes} />
+<Footer {routes} navType="public" />

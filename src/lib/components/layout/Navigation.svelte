@@ -1,51 +1,143 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import Logo from '../Logo.svelte';
-	import { onMount } from 'svelte';
-	import type { navProps } from '$lib/helpers/navigation';
 	import { theme } from '$lib/theme/index.svelte';
+	import type { SiteNavigationItem, SiteNavigationTree } from '$lib/types';
 
 	let isActive = $state(false);
 	let currentPagePath = $derived(page.url.pathname);
-	let { navType, routes }: navProps = $props();
 
 	const toggleTheme = () => (theme.current = theme.current === 'light' ? 'dark' : 'light');
 
 	let width = $state(0);
+	const DESKTOP_BREAKPOINT = 1023;
 
-	// using cms controlled json to structure nav
-	import navigation from '$lib/settings/navigation.json';
-	const { main_nav } = navigation;
+	function getNavItemId(navItem: SiteNavigationItem): string {
+		return (
+			navItem.slug ||
+			navItem.title
+				.toLowerCase()
+				.replace(/\s+/g, '-')
+				.replace(/[^a-z0-9-]/g, '')
+		);
+	}
+
+	function getNavItemHref(navItem: SiteNavigationItem): string {
+		if (navItem.slug === '/' || navItem.slug === 'home') {
+			return '/';
+		}
+
+		if (navItem.navigation_item_type === 'link') {
+			return navItem.external_url || navItem.slug || '#';
+		}
+		return navItem.slug ? `/${navItem.slug}` : '#';
+	}
+
+	function isActiveNavItem(navItem: SiteNavigationTree): boolean {
+		// Check if current item is active
+		if (navItem.slug === '/' || navItem.slug === 'home') {
+			return currentPagePath === '/';
+		}
+
+		// Check direct match
+		if (navItem.slug && currentPagePath.startsWith(`/${navItem.slug}`)) {
+			return true;
+		}
+
+		// Recursively check if any child is active (for parent highlighting)
+		if (navItem.children?.length) {
+			return navItem.children.some((child) => isActiveNavItem(child));
+		}
+
+		return false;
+	}
 
 	$effect(() => {
 		document.documentElement.classList.remove('light', 'dark');
 		document.documentElement.classList.add(theme.current);
 	});
 
-	let mainHeader,
-		mainNav,
-		trigger,
-		mainNavItems: NodeListOf<HTMLLIElement>,
-		mainNavSubItems: NodeListOf<HTMLLIElement>;
-
-	onMount(() => {
-		mainNavItems = document.querySelectorAll('.main-header__nav-item');
-		mainNavSubItems = document.querySelectorAll('.main-header__nav-sub-item');
-	});
+	let mainHeader: HTMLElement;
+	let mainNav: HTMLElement;
 
 	function toggleNav() {
 		isActive = !isActive;
-		if (mainNavItems.length) {
-			mainNavItems.forEach((item) => item.classList.remove('main-header__nav-item--clicked'));
+		// Reset all mobile nav states when closing
+		if (!isActive) {
+			// Close all levels
+			for (let i = 1; i <= 10; i++) {
+				const items = document.querySelectorAll(`.main-header__nav-item--level-${i}`);
+				items.forEach((item) => {
+					item.classList.remove('main-header__nav-item--open');
+					const button = item.querySelector('button');
+					if (button) {
+						button.setAttribute('aria-expanded', 'false');
+					}
+				});
+			}
 		}
-		if (mainNavSubItems.length) {
-			mainNavSubItems.forEach((item) =>
-				item.classList.remove('main-header__nav-sub-item--clicked')
-			);
+	}
+
+	function handleFolderClick(e: MouseEvent, level: number) {
+		// Only handle mobile interactions
+		if (width > DESKTOP_BREAKPOINT) return;
+
+		const target = e.target as HTMLElement;
+		const parent = target.parentElement as HTMLElement;
+
+		// Close other items at the same level
+		const levelSelector = `.main-header__nav-item--level-${level}`;
+		const itemsAtLevel = document.querySelectorAll(levelSelector);
+
+		itemsAtLevel.forEach((item) => {
+			if (item !== parent) {
+				item.classList.remove('main-header__nav-item--open');
+			}
+		});
+
+		// Close all items at deeper levels
+		for (let i = level + 1; i <= 10; i++) {
+			// Assuming max 10 levels
+			const deeperItems = document.querySelectorAll(`.main-header__nav-item--level-${i}`);
+			deeperItems.forEach((item) => {
+				item.classList.remove('main-header__nav-item--open');
+			});
+		}
+
+		// Toggle current item
+		parent.classList.toggle('main-header__nav-item--open');
+
+		// Update aria-expanded
+		const button = parent.querySelector('button');
+		if (button) {
+			const isOpen = parent.classList.contains('main-header__nav-item--open');
+			button.setAttribute('aria-expanded', isOpen.toString());
 		}
 	}
 
 	let y = $state(0);
+
+	function buildNavigationTree(navItems: SiteNavigationItem[]): SiteNavigationTree[] {
+		const sortedNavItems = navItems.sort((a, b) => a.display_order - b.display_order);
+
+		function buildTree(parentId: string | null = null): SiteNavigationTree[] {
+			return sortedNavItems
+				.filter((item) => item.parent_id === parentId)
+				.map((item) => ({
+					...item,
+					children: buildTree(item.id)
+				}));
+		}
+
+		return buildTree();
+	}
+
+	// Arrow SVG component for reuse
+	const ArrowIcon = `
+		<svg xmlns="http://www.w3.org/2000/svg" width="15" height="10" fill="none" viewBox="0 0 15 10" aria-hidden="true" role="img" class="main-header__nav-arrow">
+			<path fill="currentcolor" d="M12.94.223 7.5 5.663 2.06.222 0 2.283l7.5 7.5 7.5-7.5-2.06-2.06Z"/>
+		</svg>
+	`;
 </script>
 
 <svelte:window bind:innerWidth={width} bind:scrollY={y} />
@@ -57,7 +149,7 @@
 	tabindex="-1"
 	bind:this={mainHeader}
 >
-	<a class="skiplink" href="#content"> Skip to Main Content </a>
+	<a class="skiplink" href="#content">Skip to Main Content</a>
 
 	<div class="main-header__container">
 		<a id="logo" class="main-header__logo" href="/">
@@ -66,14 +158,9 @@
 
 		<div class="main-header__mod">
 			<div class="main-header__contactinfo">
-				<a href="/" class="btn">Contact Us</a>
+				<a href="/contact" class="btn">Contact Us</a>
 
-				<button
-					bind:this={trigger}
-					onclick={toggleTheme}
-					id="theme-toggle"
-					aria-label="Click to change theme"
-				>
+				<button onclick={toggleTheme} id="theme-toggle" aria-label="Click to change theme">
 					<svg
 						class="theme"
 						aria-hidden="true"
@@ -100,190 +187,70 @@
 				<button
 					id="main-header__menu-toggle"
 					class="main-header__menu-toggle"
-					aria-label="Toggle"
 					class:main-header__menu-toggle--active={isActive}
+					aria-label="Toggle navigation menu"
 					aria-expanded={isActive}
 					onclick={toggleNav}
 				>
-					<span />
-					<span />
-					<span />
+					<span></span>
+					<span></span>
+					<span></span>
 				</button>
 			</div>
 
 			<nav class="main-header__nav" class:main-header__nav--active={isActive} bind:this={mainNav}>
-				<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-				<!-- svelte-ignore a11y_click_events_have_key_events -->
-				<ul class="main-header__nav-items" style="--level: 1;">
-					<!-- top level routes -->
-					{#each main_nav as route}
-						{#if route.path === '/'}
-							<li
-								class="main-header__nav-item"
-								class:main-header__nav-item--active={currentPagePath === route.path}
-							>
-								<a
-									onclick={toggleNav}
-									class="main-header__nav-link"
-									id="main-header__nav-link-{route.name.toLowerCase()}"
-									href={route.path}
-									tabindex="0"
+				{#if page.data.cms.site_navigation?.length}
+					{#snippet navLevel(items, level = 1)}
+						<ul
+							class="main-header__nav-list main-header__nav-list--level-{level}"
+							style="--list-level: {level};"
+							class:main-header__nav-list--sub={level > 1}
+						>
+							{#each items as navItem}
+								<li
+									class="main-header__nav-item main-header__nav-item--{navItem.navigation_item_type} main-header__nav-item--level-{level}"
+									class:main-header__nav-item--active={isActiveNavItem(navItem)}
+									class:main-header__nav-item--sub={level > 1}
 								>
-									<span>{route.name}</span>
-								</a>
-							</li>
-						{:else}
-							<li
-								class="main-header__nav-item"
-								class:main-header__nav-item--haschildren={route.children?.length}
-								class:main-header__nav-item--active={currentPagePath.startsWith(route.path)}
-							>
-								<!-- 2nd level routes -->
-								{#if route.children?.length}
-									<button
-										class="main-header__nav-button"
-										id="main-header__nav-button-{route.name.toLowerCase()}"
-										tabindex="0"
-										onclick={(e: MouseEvent) => {
-											const target = e.target as HTMLElement;
-
-											if (width > 1023) {
-												// focus on first list item
-												const siblingList = target.nextElementSibling as HTMLElement;
-												if (siblingList) {
-													const siblingListFirstItem = siblingList.children[0] as HTMLLIElement;
-													const siblingListFirstItemAnchor =
-														siblingListFirstItem?.firstChild as HTMLAnchorElement;
-													siblingListFirstItemAnchor.focus();
-												}
-											} else {
-												// toggle classes
-												const parent = target.parentElement as HTMLElement;
-												mainNavItems.forEach((item: HTMLElement) => {
-													if (item === parent) return;
-													item.classList.remove('main-header__nav-item--clicked');
-												});
-
-												// toggle sub items too
-												mainNavSubItems.forEach((item: HTMLElement) => {
-													if (item === parent) return;
-													item.classList.remove('main-header__nav-sub-item--clicked');
-												});
-
-												parent.classList.toggle('main-header__nav-item--clicked');
-											}
-										}}
-									>
-										<span>{route.name}</span>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											width="15"
-											height="10"
-											fill="none"
-											viewBox="0 0 15 10"
-											aria-hidden="true"
-											role="img"
-											class="main-header__nav-arrow"
+									{#if navItem.navigation_item_type === 'folder'}
+										<!-- Folder Button -->
+										<button
+											class="main-header__nav-button main-header__nav-button--level-{level}"
+											class:main-header__nav-button--sub={level > 1}
+											id="main-header__nav-button-{getNavItemId(navItem)}"
+											aria-expanded="false"
+											onclick={(e) => handleFolderClick(e, level)}
 										>
-											<path
-												fill="currentcolor"
-												d="M12.94.223 7.5 5.663 2.06.222 0 2.283l7.5 7.5 7.5-7.5-2.06-2.06Z"
-											/>
-										</svg>
-									</button>
+											<span>{navItem.title}</span>
+											{@html ArrowIcon}
+										</button>
 
-									<ul class="main-header__nav-sub-items" style="--level: 2;">
-										{#each route.children as subroute}
-											<li
-												class="main-header__nav-sub-item"
-												class:main-header__nav-sub-item--haschildren={subroute.children?.length}
-											>
-												<!-- tertiary links -->
-												{#if subroute.children?.length}
-													<button
-														class="main-header__nav-sub-button"
-														tabindex="0"
-														onclick={(e: MouseEvent) => {
-															const target = e.target as HTMLElement;
+										<!-- Recursive Submenu -->
+										{#if navItem.children?.length}
+											{@render navLevel(navItem.children, level + 1)}
+										{/if}
+									{:else}
+										<!-- Regular Link -->
+										<a
+											class="main-header__nav-link main-header__nav-link--{navItem.navigation_item_type} main-header__nav-link--level-{level}"
+											class:main-header__nav-link--sub={level > 1}
+											id="main-header__nav-link-{getNavItemId(navItem)}"
+											href={getNavItemHref(navItem)}
+											target={navItem.navigation_item_type === 'link'
+												? navItem.link_target || '_blank'
+												: undefined}
+											onclick={toggleNav}
+										>
+											<span>{navItem.title}</span>
+										</a>
+									{/if}
+								</li>
+							{/each}
+						</ul>
+					{/snippet}
 
-															if (width > 1023) {
-																// focus on first list item
-																const siblingList = target.nextElementSibling as HTMLElement;
-																if (siblingList) {
-																	const siblingListFirstItem = siblingList
-																		.children[0] as HTMLLIElement;
-																	const siblingListFirstItemAnchor =
-																		siblingListFirstItem?.firstChild as HTMLAnchorElement;
-																	siblingListFirstItemAnchor.focus();
-																}
-															} else {
-																// toggle classes
-																const parent = target.parentElement as HTMLElement;
-																const mainNavSubItems = document.querySelectorAll(
-																	'.main-header__nav-sub-item'
-																) as NodeListOf<HTMLLIElement>;
-
-																mainNavSubItems.forEach((item: HTMLElement) => {
-																	if (item === parent) return;
-																	item.classList.remove('main-header__nav-sub-item--clicked');
-																});
-																parent.classList.toggle('main-header__nav-sub-item--clicked');
-															}
-														}}
-													>
-														<span>{subroute.name}</span>
-														<svg
-															xmlns="http://www.w3.org/2000/svg"
-															width="15"
-															height="10"
-															fill="none"
-															viewBox="0 0 15 10"
-															aria-hidden="true"
-															role="img"
-															class="main-header__nav-arrow"
-														>
-															<path
-																fill="currentcolor"
-																d="M12.94.223 7.5 5.663 2.06.222 0 2.283l7.5 7.5 7.5-7.5-2.06-2.06Z"
-															/>
-														</svg>
-													</button>
-													<ul class="main-header__nav-tertiary-items" style="--level: 3;">
-														{#each subroute.children as tertiaryRoute}
-															<li class="main-header__nav-tertiary-item">
-																<a href={tertiaryRoute.path} class="main-header__nav-tertiary-link">
-																	<span>{tertiaryRoute.name}</span>
-																</a>
-															</li>
-														{/each}
-													</ul>
-												{:else}
-													<a
-														href={subroute.path}
-														class="main-header__nav-sub-link"
-														onclick={toggleNav}
-													>
-														<span>{subroute.name}</span>
-													</a>
-												{/if}
-											</li>
-										{/each}
-									</ul>
-								{:else}
-									<a
-										class="main-header__nav-link"
-										id="main-header__nav-link-{route.name.toLowerCase()}"
-										href={route.path}
-										tabindex="0"
-										onclick={toggleNav}
-									>
-										<span>{route.name}</span>
-									</a>
-								{/if}
-							</li>
-						{/if}
-					{/each}
-				</ul>
+					{@render navLevel(buildNavigationTree(page.data.cms.site_navigation))}
+				{/if}
 			</nav>
 		</div>
 	</div>

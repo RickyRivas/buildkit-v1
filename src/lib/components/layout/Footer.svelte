@@ -9,7 +9,6 @@
 	import type { navProps } from '$lib/helpers/navigation';
 	import { formatPhoneLink } from '$lib/helpers/format';
 	let { routes }: navProps = $props();
-	formatPhoneLink;
 </script>
 
 <footer id="ft" class="ft">

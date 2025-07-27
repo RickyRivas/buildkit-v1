@@ -1,4 +1,3 @@
-// helpers and types for navigation controller
 import { routes } from "$lib/site";
 
 export type RouteGroup = 'auth' | 'public' | 'protected';

@@ -3,6 +3,7 @@ backend:
   name: github
   branch: main
   repo: RickyRivas/buildkit-v1 # or master, depending on your default branch
+  automatic_deployments: false
 
 # Media files configuration
 media_folder: "static/images"

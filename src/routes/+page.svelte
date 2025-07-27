@@ -4,11 +4,25 @@
 	import type { MetaTags } from '$lib/helpers/navigation';
 
 	const metatags = routes.public.find((route) => route.name === 'Home')?.metatags as MetaTags;
+
+	let { data } = $props();
+	const {
+		cms: { site, site_pages }
+	} = $derived(data);
+
+	// console.log(site, site_pages);
 </script>
 
 <SeoHead {metatags} />
 
-<h1>Rivas Web designs 2025 buildkit!</h1>
+<h1>Site from CMS: {site.site_name}</h1>
+
+<ul>
+	{#each site_pages as page}
+		<li>view {page.title} page</li>
+	{/each}
+</ul>
+
 <p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
 
 <section id="hero" class="hero">
