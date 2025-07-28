@@ -117,6 +117,7 @@
 
 	let y = $state(0);
 
+	// nav items fetched from CMS need to be restructured into a new array
 	function buildNavigationTree(navItems: SiteNavigationItem[]): SiteNavigationTree[] {
 		const sortedNavItems = navItems.sort((a, b) => a.display_order - b.display_order);
 
@@ -207,44 +208,46 @@
 							class:main-header__nav-list--sub={level > 1}
 						>
 							{#each items as navItem}
-								<li
-									class="main-header__nav-item main-header__nav-item--{navItem.navigation_item_type} main-header__nav-item--level-{level}"
-									class:main-header__nav-item--active={isActiveNavItem(navItem)}
-									class:main-header__nav-item--sub={level > 1}
-								>
-									{#if navItem.navigation_item_type === 'folder'}
-										<!-- Folder Button -->
-										<button
-											class="main-header__nav-button main-header__nav-button--level-{level}"
-											class:main-header__nav-button--sub={level > 1}
-											id="main-header__nav-button-{getNavItemId(navItem)}"
-											aria-expanded="false"
-											onclick={(e) => handleFolderClick(e, level)}
-										>
-											<span>{navItem.title}</span>
-											{@html ArrowIcon}
-										</button>
+								{#if navItem.is_published}
+									<li
+										class="main-header__nav-item main-header__nav-item--{navItem.navigation_item_type} main-header__nav-item--level-{level}"
+										class:main-header__nav-item--active={isActiveNavItem(navItem)}
+										class:main-header__nav-item--sub={level > 1}
+									>
+										{#if navItem.navigation_item_type === 'folder'}
+											<!-- Folder Button -->
+											<button
+												class="main-header__nav-button main-header__nav-button--level-{level}"
+												class:main-header__nav-button--sub={level > 1}
+												id="main-header__nav-button-{getNavItemId(navItem)}"
+												aria-expanded="false"
+												onclick={(e) => handleFolderClick(e, level)}
+											>
+												<span>{navItem.title}</span>
+												{@html ArrowIcon}
+											</button>
 
-										<!-- Recursive Submenu -->
-										{#if navItem.children?.length}
-											{@render navLevel(navItem.children, level + 1)}
+											<!-- Recursive Submenu -->
+											{#if navItem.children?.length}
+												{@render navLevel(navItem.children, level + 1)}
+											{/if}
+										{:else}
+											<!-- Regular Link -->
+											<a
+												class="main-header__nav-link main-header__nav-link--{navItem.navigation_item_type} main-header__nav-link--level-{level}"
+												class:main-header__nav-link--sub={level > 1}
+												id="main-header__nav-link-{getNavItemId(navItem)}"
+												href={getNavItemHref(navItem)}
+												target={navItem.navigation_item_type === 'link'
+													? navItem.link_target || '_blank'
+													: undefined}
+												onclick={toggleNav}
+											>
+												<span>{navItem.title}</span>
+											</a>
 										{/if}
-									{:else}
-										<!-- Regular Link -->
-										<a
-											class="main-header__nav-link main-header__nav-link--{navItem.navigation_item_type} main-header__nav-link--level-{level}"
-											class:main-header__nav-link--sub={level > 1}
-											id="main-header__nav-link-{getNavItemId(navItem)}"
-											href={getNavItemHref(navItem)}
-											target={navItem.navigation_item_type === 'link'
-												? navItem.link_target || '_blank'
-												: undefined}
-											onclick={toggleNav}
-										>
-											<span>{navItem.title}</span>
-										</a>
-									{/if}
-								</li>
+									</li>
+								{/if}
 							{/each}
 						</ul>
 					{/snippet}
